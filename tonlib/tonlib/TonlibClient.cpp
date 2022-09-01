@@ -680,7 +680,7 @@ class AccountState {
       return wallet_type_;
     }
 
-    LOG(WARNING) << "Unknown code hash: " << td::base64_encode(code_hash.as_slice());
+    // LOG(WARNING) << "Unknown code hash: " << td::base64_encode(code_hash.as_slice());
     wallet_type_ = WalletType::Unknown;
     return wallet_type_;
   }
