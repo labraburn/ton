@@ -25,7 +25,12 @@ struct Clocks {
 
   static double system();
 
-  static int tz_offset();
+  //
+  //
+  // Strange behaviour: produces crash at launch on some iphones
+  //
+  //
+  // static int tz_offset();
 };
 
 }  // namespace td
