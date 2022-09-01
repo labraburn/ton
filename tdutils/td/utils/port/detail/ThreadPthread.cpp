@@ -35,42 +35,46 @@ char disable_linker_warning_about_empty_file_thread_pthread_cpp TD_UNUSED;
 namespace td {
 namespace detail {
 unsigned ThreadPthread::hardware_concurrency() {
-// Linux and macOS
-#if defined(_SC_NPROCESSORS_ONLN)
-  {
-    auto res = sysconf(_SC_NPROCESSORS_ONLN);
-    if (res > 0) {
-      return narrow_cast<unsigned>(res);
-    }
-  }
-#endif
+  //
+  // Use only one thread for mobile device and strange cases
+  //
+  return 1;
+  // // Linux and macOS
+  // #if defined(_SC_NPROCESSORS_ONLN)
+  //   {
+  //     auto res = sysconf(_SC_NPROCESSORS_ONLN);
+  //     if (res > 0) {
+  //       return narrow_cast<unsigned>(res);
+  //     }
+  //   }
+  // #endif
 
-#if TD_FREEBSD || TD_OPENBSD || TD_NETBSD
-#if defined(HW_AVAILCPU) && defined(CTL_HW)
-  {
-    int mib[2] = {CTL_HW, HW_AVAILCPU};
-    int res{0};
-    size_t len = sizeof(res);
-    if (sysctl(mib, 2, &res, &len, nullptr, 0) == 0 && res != 0) {
-      return res;
-    }
-  }
-#endif
+  // #if TD_FREEBSD || TD_OPENBSD || TD_NETBSD
+  // #if defined(HW_AVAILCPU) && defined(CTL_HW)
+  //   {
+  //     int mib[2] = {CTL_HW, HW_AVAILCPU};
+  //     int res{0};
+  //     size_t len = sizeof(res);
+  //     if (sysctl(mib, 2, &res, &len, nullptr, 0) == 0 && res != 0) {
+  //       return res;
+  //     }
+  //   }
+  // #endif
 
-#if defined(HW_NCPU) && defined(CTL_HW)
-  {
-    int mib[2] = {CTL_HW, HW_NCPU};
-    int res{0};
-    size_t len = sizeof(res);
-    if (sysctl(mib, 2, &res, &len, nullptr, 0) == 0 && res != 0) {
-      return res;
-    }
-  }
-#endif
-#endif
+  // #if defined(HW_NCPU) && defined(CTL_HW)
+  //   {
+  //     int mib[2] = {CTL_HW, HW_NCPU};
+  //     int res{0};
+  //     size_t len = sizeof(res);
+  //     if (sysctl(mib, 2, &res, &len, nullptr, 0) == 0 && res != 0) {
+  //       return res;
+  //     }
+  //   }
+  // #endif
+  // #endif
 
-  // Just in case
-  return 8;
+  //   // Just in case
+  //   return 8;
 }
 
 void ThreadPthread::set_name(CSlice name) {
